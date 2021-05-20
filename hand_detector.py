@@ -32,9 +32,18 @@ class HandTracker:
 		return landmark_list
 
 
+	def checkHandSide(self, landmark_list):
+		return "LEFT" if landmark_list[self.fingers_top[0]][1] < landmark_list[self.fingers_top[-1]][1] else "RIGHT"
+
+
 	def checkFingersUpOrDown(self, landmark_list):
-		finger_list = [0]
+		finger_list = []
 		if self.landmarks.multi_hand_landmarks:
+			hand_side = self.checkHandSide(landmark_list)
+			if hand_side == 'LEFT':
+				finger_list.append(1 if landmark_list[self.fingers_top[0]][1] < landmark_list[self.fingers_top[1]][1] else 0)
+			else:
+				finger_list.append(1 if landmark_list[self.fingers_top[0]][1] > landmark_list[self.fingers_top[1]][1] else 0)
 			for idx in range(1, len(self.fingers_top)):
 				if landmark_list[self.fingers_top[idx]][2] < landmark_list[self.fingers_top[idx]-2][2]:
 					finger_list.append(1)
